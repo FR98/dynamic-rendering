@@ -7,11 +7,11 @@ class Sphere(object):
         self.radius = radius
         self.material = material
 
-    def ray_intersect(self, orig, dir):
+    def ray_intersect(self, orig, dirr):
         L = sub(self.center, orig)
-        tca = dot(L, dir)
+        tca = dot(L, dirr)
         l = frobeniusNorm(L)
-        d = ( l ** 2 - tca ** 2) ** 0.5
+        d = (l ** 2 - tca ** 2) ** 0.5
         if d > self.radius:
             return None
 

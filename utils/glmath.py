@@ -25,7 +25,7 @@ def baryCoords(A, B, C, P):
 
     return u, v, w
 
-def vector(self, x, y, z=0, w=0):
+def vector(x, y, z=0, w=0):
     return {
         "x": x,
         "y": y,
