@@ -12,7 +12,7 @@ from utils.sphere import Sphere
 from utils.material import Material
 
 def dr1():
-    render = Raytracer(1080, 1080)
+    render = Raytracer(700, 700)
 
     white_snow = Material(diffuse = Color.color(1, 0.98, 0.98))
     black = Material(diffuse = Color.color(0, 0, 0))
@@ -34,15 +34,15 @@ def dr1():
     render.scene.append(Sphere(Raytracer.vector(0, 0.75, -3), 0.09, orange_carrot))
 
     # Eyes
-    # render.scene.append(Sphere(Raytracer.vector(-1, 0.9, -3), 0.08, white))
-    # render.scene.append(Sphere(Raytracer.vector(0.5, 0.9, -3), 0.08, white))
-    render.scene.append(Sphere(Raytracer.vector(-0.5, 0.8, -2.5), 0.03, black))
-    render.scene.append(Sphere(Raytracer.vector(0.5, 0.8, -2.5), 0.03, black))
+    render.scene.append(Sphere(Raytracer.vector(-0.1, 0.9, -3), 0.08, white))
+    render.scene.append(Sphere(Raytracer.vector(0.1, 0.9, -3), 0.08, white))
+    render.scene.append(Sphere(Raytracer.vector(-0.1, 0.8, -2.5), 0.03, black))
+    render.scene.append(Sphere(Raytracer.vector(0.1, 0.8, -2.5), 0.03, black))
 
-    # render.scene.append(Sphere(Raytracer.vector(-0.08, 0.7,  -3), 0.04, gray))
-    # render.scene.append(Sphere(Raytracer.vector(0.08, 0.7,  -3), 0.04, gray))
-    # render.scene.append(Sphere(Raytracer.vector(-0.20, 0.77,  -3), 0.04, gray))
-    # render.scene.append(Sphere(Raytracer.vector(0.20, 0.77,  -3), 0.04, gray))
+    render.scene.append(Sphere(Raytracer.vector(-0.08, 0.53,  -3), 0.04, gray))
+    render.scene.append(Sphere(Raytracer.vector(0.08, 0.53,  -3), 0.04, gray))
+    render.scene.append(Sphere(Raytracer.vector(-0.20, 0.6,  -3), 0.04, gray))
+    render.scene.append(Sphere(Raytracer.vector(0.20, 0.6,  -3), 0.04, gray))
 
     render.rtRender()
     render.glFinish('output/dr1.bmp')
