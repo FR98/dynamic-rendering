@@ -36,6 +36,15 @@ def vector(x, y, z=0, w=0):
 def sub(A, B):
     return vector(A['x'] - B['x'], A['y'] - B['y'], A['z'] - B['z'])
 
+def suma(A, B):
+    return vector(A['x'] + B['x'], A['y'] + B['y'], A['z'] + B['z'])
+
+def mulVectores(A, B):
+    return vector(A['x'] * B['x'], A['y'] * B['y'], A['z'] * B['z'])
+
+def mulEscalarVector(a, B):
+    return vector(a * B['x'], a * B['y'], a * B['z'])
+
 def cross(A, B):
     return vector(A['y'] * B['z'] - B['y'] * A['z'], -(A['x'] * B['z'] - B['x'] * A['z']), A['x'] * B['y'] - B['x'] * A['y'])
 

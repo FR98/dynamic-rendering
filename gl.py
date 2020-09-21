@@ -22,6 +22,8 @@ class Raytracer(object):
         self.camPosition = self.vector(0, 0, 0)
         self.fov = 60
         self.scene = []
+        self.pointLight = None
+        self.ambientLight = None
 
     @staticmethod
     def glInit(width, height):
@@ -184,13 +186,86 @@ class Raytracer(object):
                 direction = self.vector(Px, Py, -1)
                 direction = glmath.div(direction, glmath.frobeniusNorm(direction))
                 material = None
+                intersect = None
 
                 for obj in self.scene:
-                    intersect = obj.ray_intersect(self.camPosition, direction)
-                    if intersect:
-                        if intersect.distance < self.zbuffer[y][x]:
-                            self.zbuffer[y][x] = intersect.distance
+                    hit = obj.ray_intersect(self.camPosition, direction)
+                    if hit:
+                        if hit.distance < self.zbuffer[y][x]:
+                            self.zbuffer[y][x] = hit.distance
                             material = obj.material
+                            intersect = hit
 
-                if material:
-                    self.glVertex_coords(x, y, material.diffuse)
+                if intersect:
+                    self.glVertex_coords(x, y, self.pointColor(material, intersect))
+
+    def pointColor(self, material, intersect):
+        objectColor = self.vector(
+            material.diffuse[2] / 255,
+            material.diffuse[1] / 255,
+            material.diffuse[0] / 255
+        )
+
+        ambientColor = self.vector(0, 0, 0)
+        diffuseColor = self.vector(0, 0, 0)
+        specColor = self.vector(0, 0, 0)
+
+        shadow_intensity = 0
+
+        if self.ambientLight:
+            ambientColor = self.vector(
+                self.ambientLight.strength * self.ambientLight.color[2] / 255,
+                self.ambientLight.strength * self.ambientLight.color[1] / 255,
+                self.ambientLight.strength * self.ambientLight.color[0] / 255
+            )
+
+        if self.pointLight:
+            light_dir = glmath.sub(self.pointLight.position, intersect.point)
+            light_dir = glmath.div(light_dir, glmath.frobeniusNorm(light_dir))
+
+            intensity = self.pointLight.intensity * max(0, glmath.dot(light_dir, intersect.normal))
+            diffuseColor = self.vector(
+                intensity * self.pointLight.color[2] / 255,
+                intensity * self.pointLight.color[1] / 255,
+                intensity * self.pointLight.color[2] / 255
+            )
+
+            view_dir = glmath.sub(self.camPosition, intersect.point)
+            view_dir = glmath.div(view_dir, glmath.frobeniusNorm(view_dir))
+
+            reflect = 2 * glmath.dot(intersect.normal, light_dir)
+            reflect = glmath.mulEscalarVector(reflect, intersect.normal)
+            reflect = glmath.sub(reflect, light_dir)
+
+            spec_intensity = self.pointLight.intensity * (max(0, glmath.dot(view_dir, reflect)) ** material.spec)
+
+            specColor = self.vector(
+                spec_intensity * self.pointLight.color[2] / 255,
+                spec_intensity * self.pointLight.color[1] / 255,
+                spec_intensity * self.pointLight.color[0] / 255
+            )
+
+            for obj in self.scene:
+                if obj is not intersect.sceneObject:
+                    hit = obj.ray_intersect(intersect.point,  light_dir)
+                    if hit and intersect.distance < glmath.frobeniusNorm(glmath.sub(self.pointLight.position, intersect.point)):
+                        shadow_intensity = 1
+
+
+        finalColor = glmath.mulVectores(
+            glmath.suma(
+                ambientColor,
+                glmath.mulEscalarVector(
+                    (1 - shadow_intensity),
+                    glmath.suma(diffuseColor, specColor)
+                )
+            ),
+            objectColor
+        )
+
+        r = min(1, finalColor['x'])
+        g = min(1, finalColor['y'])
+        b = min(1, finalColor['z'])
+
+        return Color.color(r, g, b)
+
