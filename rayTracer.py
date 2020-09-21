@@ -21,7 +21,7 @@ while continuar:
 	option = input('Ingresa un numero: ')
 
 	if option == '1':
-		examples.dr1()
+		examples.dr2()
 	elif option == '99':
 		continuar = False
 		print('Bye Bye')

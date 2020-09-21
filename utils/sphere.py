@@ -1,5 +1,5 @@
 from utils.intersect import Intersect
-from utils.glmath import sub, dot, frobeniusNorm
+from utils.glmath import sub, dot, frobeniusNorm, suma, mulEscalarVector, div
 
 class Sphere(object):
     def __init__(self, center, radius, material):
@@ -24,4 +24,13 @@ class Sphere(object):
         if t0 < 0:
             return None
 
-        return Intersect(distance = t0)
+        hit = suma(orig, mulEscalarVector(t0, dirr))
+        norm = sub(hit, self.center)
+        norm = div(norm, frobeniusNorm(norm))
+
+        return Intersect(
+            distance = t0,
+            point = hit,
+            normal = norm,
+            sceneObject = self
+        )
