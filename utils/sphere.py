@@ -1,5 +1,13 @@
+"""
+---------------------------------------------------------------------------------------------------
+	Author:
+	Francisco Rosal 18676
+---------------------------------------------------------------------------------------------------
+"""
+
 from utils.intersect import Intersect
 from utils.glmath import sub, dot, frobeniusNorm, suma, mulEscalarVector, div
+
 
 class Sphere(object):
     def __init__(self, center, radius, material):
