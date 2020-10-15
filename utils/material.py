@@ -13,8 +13,9 @@ TRANSPARENT = 2
 
 
 class Material(object):
-    def __init__(self, diffuse = Color.white(), spec = 0, ior = 1, matType = OPAQUE):
+    def __init__(self, diffuse = Color.white(), spec = 0, ior = 1, texture = None, matType = OPAQUE):
         self.ior = ior
         self.spec = spec
         self.diffuse = diffuse
         self.matType = matType
+        self.texture = texture

@@ -10,7 +10,8 @@ import utils.examples as examples
 def menu():
 	print("""
 	Menu:
-1.  DR1
+1.  DR
+2.  Proyecto
 99. Exit
 	""")
 
@@ -22,6 +23,8 @@ while continuar:
 
 	if option == '1':
 		examples.dr()
+	elif option == '2':
+		examples.proyecto()
 	elif option == '99':
 		continuar = False
 		print('Bye Bye')

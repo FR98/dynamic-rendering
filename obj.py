@@ -108,7 +108,7 @@ class Envmap(object):
 
         direction = div(direction, frobeniusNorm(direction))
 
-        x = int((arctan2( direction[2], direction[0]) / (2 * pi) + 0.5) * self.width)
-        y = int(arccos(-direction[1]) / pi * self.height )
+        x = int((arctan2( direction['z'], direction['x']) / (2 * pi) + 0.5) * self.width)
+        y = int(arccos(-direction['y']) / pi * self.height )
 
         return self.pixels[y][x]

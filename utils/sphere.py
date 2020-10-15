@@ -7,6 +7,7 @@
 
 from utils.intersect import Intersect
 from utils.glmath import sub, dot, frobeniusNorm, suma, mulEscalarVector, div
+from numpy import arctan2, arccos, pi
 
 
 class Sphere(object):
@@ -36,9 +37,15 @@ class Sphere(object):
         norm = sub(hit, self.center)
         norm = div(norm, frobeniusNorm(norm))
 
+        u = 1 - arctan2(norm[2], norm[0]) / (2 * pi) + 0.5
+        v = arccos(-norm[1]) / pi
+
+        uvs = [u, v]
+
         return Intersect(
             distance = t0,
             point = hit,
             normal = norm,
+            textCoords = uvs,
             sceneObject = self
         )
