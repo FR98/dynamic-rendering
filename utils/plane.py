@@ -29,6 +29,7 @@ class Plane(object):
                     distance = t,
                     point = hit,
                     normal = self.normal,
+                    textCoords = None,
                     sceneObject = self
                 )
 

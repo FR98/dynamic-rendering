@@ -17,14 +17,14 @@ class AABB(object):
         self.position = position
         self.material = material
 
-        halfSize = size / 2
+        halfSize = div(size, 2)
 
-        self.planes.append(Plane(suma(position, vector(halfSize, 0, 0)),  vector(1, 0, 0),    material))
-        self.planes.append(Plane(suma(position, vector(-halfSize, 0, 0)), vector(-1, 0, 0),   material))
-        self.planes.append(Plane(suma(position, vector(0, halfSize, 0)),  vector(0, 1, 0),    material))
-        self.planes.append(Plane(suma(position, vector(0, -halfSize, 0)), vector(0, -1, 0),   material))
-        self.planes.append(Plane(suma(position, vector(0, 0, halfSize)),  vector(0, 0, 1),    material))
-        self.planes.append(Plane(suma(position, vector(0, 0, -halfSize)), vector(0, 0, -1),   material))
+        self.planes.append(Plane(suma(position, vector(halfSize['x'], 0, 0)),  vector(1, 0, 0),    material))
+        self.planes.append(Plane(suma(position, vector(-halfSize['x'], 0, 0)), vector(-1, 0, 0),   material))
+        self.planes.append(Plane(suma(position, vector(0, halfSize['y'], 0)),  vector(0, 1, 0),    material))
+        self.planes.append(Plane(suma(position, vector(0, -halfSize['y'], 0)), vector(0, -1, 0),   material))
+        self.planes.append(Plane(suma(position, vector(0, 0, halfSize['z'])),  vector(0, 0, 1),    material))
+        self.planes.append(Plane(suma(position, vector(0, 0, -halfSize['z'])), vector(0, 0, -1),   material))
 
 
     def ray_intersect(self, orig, dirr):
@@ -33,11 +33,12 @@ class AABB(object):
         boundsMax = vector('0', '0', '0')
 
         for i in ['x', 'y', 'z']:
-            boundsMin[i] = self.position[i] - (epsilon + self.size / 2)
-            boundsMax[i] = self.position[i] + (epsilon + self.size / 2)
+            boundsMin[i] = self.position[i] - (epsilon + self.size[i] / 2)
+            boundsMax[i] = self.position[i] + (epsilon + self.size[i] / 2)
 
         t = float('inf')
         intersect = None
+        uvs = None
 
         for plane in self.planes:
             planeInter = plane.ray_intersect(orig, dirr)
@@ -50,6 +51,20 @@ class AABB(object):
                                 t = planeInter.distance
                                 intersect = planeInter
 
+                                if abs(plane.normal['x']) > 0:
+                                    u = (planeInter.point['y'] - boundsMin['y']) / (boundsMax['y'] - boundsMin['y'])
+                                    v = (planeInter.point['z'] - boundsMin['z']) / (boundsMax['z'] - boundsMin['z'])
+
+                                elif abs(plane.normal['y']) > 0:
+                                    u = (planeInter.point['x'] - boundsMin['x']) / (boundsMax['x'] - boundsMin['x'])
+                                    v = (planeInter.point['z'] - boundsMin['z']) / (boundsMax['z'] - boundsMin['z'])
+
+                                elif abs(plane.normal['z']) > 0:
+                                    u = (planeInter.point['x'] - boundsMin['x']) / (boundsMax['x'] - boundsMin['x'])
+                                    v = (planeInter.point['y'] - boundsMin['y']) / (boundsMax['y'] - boundsMin['y'])
+
+                                uvs = [u, v]
+
         if intersect is None:
             return None
 
@@ -57,5 +72,6 @@ class AABB(object):
             distance = intersect.distance,
             point = intersect.point,
             normal = intersect.normal,
+            textCoords = uvs,
             sceneObject = self
         )
